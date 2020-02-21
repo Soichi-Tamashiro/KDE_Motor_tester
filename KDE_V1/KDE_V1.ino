@@ -14,6 +14,7 @@ void setup() {
   for (int thisPin = 2; thisPin < 7; thisPin++) {
     pinMode(thisPin, OUTPUT);
   }
+  analogWriteResolution(11);
   analogWriteFrequency(A9, 200);
 } 
 /*
@@ -40,7 +41,7 @@ void serialEvent()
       dato =400;
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
-      analogWrite(A9, map(dato, 0, 2000, 0, 255));
+      analogWrite(A9, map(dato, 0, 2047, 0, 2047));
       /* Serial.print("Secuencia de Apagado Iniciada");
       delay(1000);
       Serial.print(".");
@@ -54,27 +55,30 @@ void serialEvent()
    }
    // Si el String es "hemo1" Se envia el comando de velocidad para analisis tipo 1
    else if (inputString=="hemo1"){
-      dato =700;
+      dato =100;// deseado 1100us
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
-      analogWrite(A9, map(dato, 0, 2010, 0, 255));
+//      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
+      enviar(dato);
       Serial.print("Iniciando analisis Tipo 1\n");
    }   
    // Si el String es "hemo2" Se envia el comando de velocidad para analisis tipo 2     
    else if (inputString=="hemo2"){
-      dato =1200; //1220
+      dato =1500; //1500us deseado
 //      val = map(dato, 0, 1023, 0, 255);
 //      mimotor.write(val);
-      analogWrite(A9, map(dato, 0, 2020, 0, 255));
+//      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
+      enviar(dato);
       Serial.print("Iniciando analisis Tipo 2\n");
    }
    // Si el String es "hemo3" Se envia el comando de velocidad para analisis tipo 3
    else if (inputString=="hemo3"){
-      dato = 1900; //1930
-//      val = map(dato, 0, 1023, 0, 255);
-//      mimotor.write(val);
-      analogWrite(A9, map(dato, 0, 2030, 0, 255));
+      dato = 1900; //1900us deseado max
+      enviar(dato);
+//      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
+      enviar(dato);
       Serial.print("Iniciando analisis Tipo 3\n");
+      Serial.print(cal(dato));
    }
 
    else{
@@ -86,4 +90,13 @@ void serialEvent()
 }
 void loop(){
   // No se utiliza 
+}
+int cal (int dato) {
+  int salida;
+  return salida = (dato*2047)/4990;// Regla de 3 simple
+}
+void enviar(int dato) {
+  int val = map(cal(dato), 0, 2047, 0, 2047);
+//  int valc= val -2;
+  analogWrite(A9, val);
 }
