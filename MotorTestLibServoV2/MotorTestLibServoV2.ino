@@ -1,3 +1,4 @@
+//Prueba Git
 int thr = 0; // Antes era dato, representa el throttle
 int salida = 0; // la salida pwm mapeada
 int paso = 0; // Pasos exclusivamente para secuencia de picos
@@ -49,7 +50,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PARADA_PIN),Parada,RISING); 
   pinMode(MODO_PIN, INPUT_PULLUP); // Pin de Interrupción Modo
   attachInterrupt(digitalPinToInterrupt(MODO_PIN),Modo,FALLING);
-  analogWriteFrequency(A9, 200);
+//  analogWriteFrequency(A9, 200);
 } 
 void loop(){
  while (modo ==0) { 
