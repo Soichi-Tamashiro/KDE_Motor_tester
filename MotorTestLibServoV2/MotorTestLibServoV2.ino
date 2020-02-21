@@ -1,11 +1,11 @@
-//Prueba Git
-int thr = 0; // Antes era dato, representa el throttle
+//Programa de prueba de motores para Teensy
+int thr = 0; //  Representa el throttle valor en us
 int salida = 0; // la salida pwm mapeada
 int paso = 0; // Pasos exclusivamente para secuencia de picos
 
-#define ledVerde 11 //Indicador de prueba sencilla
-#define ledAmarillo 12 //Indicador de prueba mediana
-#define ledRojo 13 //Indicador de prueba achorada 
+#define ledVerde 10 //Indicador de prueba sencilla
+#define ledAmarillo 11 //Indicador de prueba mediana
+#define ledRojo 12 //Indicador de prueba achorada 
 
 
 //DELAYS WITH MILLIS
@@ -25,9 +25,9 @@ const unsigned long delay_4 = 1000; //  periodo de 1 seg
 const unsigned long delay_5 = 7000; //  periodo de 7 seg 
 
 // VARIABLES PARA INTERRUPCIONES
-#define SWITCH_PIN 18 // Boton para interrupciones 18
+#define MODO_PIN 17 // Boton Para seleccionar el modo 17
+#define SWITCH_PIN 18 // Boton para iniciar sec 18
 #define PARADA_PIN 19 // Boton parada de emergencia 19
-#define MODO_PIN 20 // Boton Para seleccionar el modo 20
 
 volatile int cont = 0; // Variable manipulada por la interrupción SWITCH_PIN - determina lo que hace el programa 
 volatile int modo = 0; // Variable manipulada por la interrupción MODO_PIN - determina el modo de la prueba 
@@ -50,7 +50,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(PARADA_PIN),Parada,RISING); 
   pinMode(MODO_PIN, INPUT_PULLUP); // Pin de Interrupción Modo
   attachInterrupt(digitalPinToInterrupt(MODO_PIN),Modo,FALLING);
-//  analogWriteFrequency(A9, 200);
+  analogWriteFrequency(A9, 200);
 } 
 void loop(){
  while (modo ==0) { 
@@ -76,7 +76,7 @@ while (modo ==1) { ///////////////////////////////////////////////////MODO DE PR
        while ((cont==1)&&(modo==1)) {
     if (armado==0) {
       thr = 1100; // THR
-      enviar();
+      enviar(thr);
       delay(3000); //El delay con millis no esta sirviendo en este caso 
       if (millis() - tiempo_dlay1  > delay_1)  {
         tiempo_dlay1 = millis();
@@ -87,7 +87,7 @@ while (modo ==1) { ///////////////////////////////////////////////////MODO DE PR
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=5; // THR
-          enviar();
+          enviar(thr);
        }
       } 
       armado =1;
@@ -100,7 +100,7 @@ if (paso==0) {
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=5; // THR
-          enviar();
+          enviar(thr);
        }
       if (thr>1700) {
         paso=1;
@@ -110,7 +110,7 @@ if (paso==1) {
       
        if (millis() - tiempo_dlay2 > delay_2)  {
         thr -=5; // THR
-        enviar();
+        enviar(thr);
           tiempo_dlay2 = millis(); 
           }
       if (thr<1200) {
@@ -122,11 +122,11 @@ if (paso==1) {
  //////Palanca regresa al centro
        while ((cont==3)&&(modo==1)) {
     thr = 1500; 
-    enviar();
+    enviar(thr);
 }
        while ((cont==4)&&(modo==1)) {
     thr = 1000; //Corte de motores
-    enviar();
+    enviar(thr);
 }
        while ((cont>4)&&(modo==1)) {    
  cont=0;
@@ -146,7 +146,7 @@ while (modo ==2) { ///////////////////////////////////////////////////MODO DE PR
        while ((cont==1)&&(modo==2)) {
     if (armado==0) {
       thr = 1100; // THR
-      enviar();
+      enviar(thr);
       delay(3000); //El delay con millis no esta sirviendo en este caso 
       if (millis() - tiempo_dlay1  > delay_1)  {
         tiempo_dlay1 = millis();
@@ -157,7 +157,7 @@ while (modo ==2) { ///////////////////////////////////////////////////MODO DE PR
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=5; // THR
-          enviar();
+          enviar(thr);
        }
       } 
       armado =1;
@@ -168,7 +168,7 @@ while (modo ==2) { ///////////////////////////////////////////////////MODO DE PR
 if (paso==0) {
        if (millis() - tiempo_dlay2 > delay_2)  {
         thr -=5; // THR
-        enviar();
+        enviar(thr);
           tiempo_dlay2 = millis(); 
           }
       if (thr<1400) {
@@ -176,7 +176,7 @@ if (paso==0) {
                if (millis() - tiempo_dlay4 > delay_4)  {
                 if (modo==2) {
                   thr =1400;
-                  enviar(); 
+                  enviar(thr); 
                 }
           tiempo_dlay4 = millis();
        }
@@ -187,7 +187,7 @@ if (paso==1) {
        if (millis() - tiempo_dlay3 > delay_3)  {
         if (modo==2) {
         thr =1700; // THR en realidad 1900 pero se pone 1800 para probar
-        enviar();
+        enviar(thr);
         }
           tiempo_dlay3 = millis(); 
           }
@@ -197,11 +197,11 @@ if (paso==1) {
  //////Palanca regresa al centro
        while ((cont==3)&&(modo==2)) {
     thr = 1500;
-    enviar(); 
+    enviar(thr); 
 }
        while ((cont==4)&&(modo==2)) {
     thr = 1000; //Corte de motores
-    enviar();
+    enviar(thr);
 }
        while ((cont>4)&&(modo==2)) {
    cont=0;
@@ -220,7 +220,7 @@ while (modo ==3) {///////////////////////////////////////////////////MODO DE PRU
        while ((cont==1)&&(modo==3)) {
     if (armado==0) {
       thr = 1100; // THR
-      enviar();
+      enviar(thr);
       delay(3000); //El delay con millis no esta sirviendo en este caso 
       if (millis() - tiempo_dlay1  > delay_1)  {
         tiempo_dlay1 = millis();
@@ -231,7 +231,7 @@ while (modo ==3) {///////////////////////////////////////////////////MODO DE PRU
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=5; // THR
-          enviar();
+          enviar(thr);
        }
       } 
       armado =1;
@@ -242,7 +242,7 @@ while (modo ==3) {///////////////////////////////////////////////////MODO DE PRU
 if (paso==0) {
        if (millis() - tiempo_dlay2 > delay_2)  {
         thr -=5; // THR
-        enviar();
+        enviar(thr);
           tiempo_dlay2 = millis(); 
           }
       if (thr<1350) {
@@ -250,7 +250,7 @@ if (paso==0) {
                if (millis() - tiempo_dlay4 > delay_4)  {
                 if (modo==3){
                  thr =1350;
-                 enviar(); 
+                 enviar(thr); 
                 }
           tiempo_dlay4 = millis();
        }
@@ -261,7 +261,7 @@ if (paso==1) {
        if (millis() - tiempo_dlay3 > delay_3)  {
         if (modo==3) {
         thr =1850; // THR
-        enviar();         
+        enviar(thr);         
         }
 
           tiempo_dlay3 = millis(); 
@@ -272,11 +272,11 @@ if (paso==1) {
  //////Palanca regresa al centro
        while ((cont==3)&&(modo==3)) {
     thr = 1500; 
-    enviar();
+    enviar(thr);
 }
        while ((cont==4)&&(modo==3)) {
     thr = 1000; //Corte de motores
-    enviar();
+    enviar(thr);
 }
        while ((cont>4)&&(modo==3)) {
         cont=0;
@@ -295,7 +295,7 @@ while (modo ==4) { ///////////////////////////////////////////////////MODO DE PR
        while ((cont==1)&&(modo==4)) {
     if (armado==0) {
       thr = 1100; // THR
-      enviar();
+      enviar(thr);
       delay(3000); //El delay con millis no esta sirviendo en este caso 
       if (millis() - tiempo_dlay1  > delay_1)  {
         tiempo_dlay1 = millis();
@@ -306,7 +306,7 @@ while (modo ==4) { ///////////////////////////////////////////////////MODO DE PR
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=5; // THR
-          enviar();
+          enviar(thr);
        }
       } 
       armado =1;
@@ -319,7 +319,7 @@ if (paso==0) {
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=4; // THR
-          enviar();
+          enviar(thr);
        }
       if (thr>1600) {
         paso=1;
@@ -330,14 +330,14 @@ if (paso==1){
                if (millis() - tiempo_dlay5 > delay_5)  {
           tiempo_dlay5 = millis();
          thr =1600;
-         enviar(); 
+         enviar(thr); 
        }
         paso=2;
 }
 if (paso==2) {
        if (millis() - tiempo_dlay2 > delay_2)  {
         thr -=4; // THR
-        enviar();
+        enviar(thr);
           tiempo_dlay2 = millis(); 
           }
       if (thr<1200) {
@@ -349,7 +349,7 @@ if (paso==3){
                if (millis() - tiempo_dlay5 > delay_5)  {
           tiempo_dlay5 = millis();
          thr =1200; 
-         enviar();
+         enviar(thr);
        }
         paso=4;
 }
@@ -358,7 +358,7 @@ if (paso==4) {
        if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr +=4; // THR
-          enviar();
+          enviar(thr);
        }
       if (thr>1500) {
         apagado++; //cada aumento de apagado representa alrededor de 25 segundos
@@ -378,7 +378,7 @@ while((thr > 1130)&&(cont==3)) {
          if (millis() - tiempo_dlay2 > delay_2)  {
           tiempo_dlay2 = millis();
           thr -=4;
-          enviar(); 
+          enviar(thr); 
         }
         if ((thr<1140)) {
           cont=4;
@@ -388,14 +388,14 @@ while((thr > 1130)&&(cont==3)) {
  }
        while ((cont==4)&&(modo==4)) {
     thr = 1000; //Corte de motores
-    enviar();
+    enviar(thr);
     apagadosec=2;
     cont=5;
     
 }
        while ((cont==5)&&(modo==4)) {
     thr = 1000; //Corte de motores
-    enviar();
+    enviar(thr);
 }
        while ((cont>5)&&(modo==4)) {    
  cont=0;
@@ -415,7 +415,7 @@ while (modo>4) { ///// Se reinicia el ciclo
   void Parada() { //Parada de emergencia
      if (millis() - tiempo_fp > delay_fp)  {
 thr = 700; //Corte de motores
-enviar();
+enviar(thr);
 modo=0;
 cont=0;
     tiempo_fp = millis(); 
@@ -436,9 +436,16 @@ FirstT=0;
       apagado=0;
       apagadosec=0; 
       thr = 500;
-      enviar();
+      enviar(thr);
   }
-void enviar() {
-  salida = map(thr, 0, 2047, 0, 255);
-  analogWrite(A9, salida);
+int cal (int thr) {
+  int rtres;
+  return rtres = (thr*2047)/4990;// Regla de 3 simple
+}
+void enviar(int thr) {
+  salida = map(cal(thr), 0, 2047, 0, 255);
+  analogWrite(A9, salida); //Salida Motor 1
+  analogWrite(A8, salida); //Salida Motor 2
+  analogWrite(A7, salida); //Salida Motor 3
+  analogWrite(A6, salida); //Salida Motor 4
 }
