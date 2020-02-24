@@ -1,9 +1,9 @@
-// Llama a la libreria servo para el control del motor brushles de dron
-#include <Servo.h> 
-Servo mimotor;                   // Cambio de nombre para llamar mas facilmente a las funciones de la libreria servo
+# include <PulsePosition.h>
 int dato = 0;
 int val = 0;
 String inputString = "";         // String para almacenar el texto enviado por Serial
+
+PulsePositionOutput ppmOUT;
 
 void setup() {
   // Iniciando comunicacion serial a 9600 baudrate
@@ -16,11 +16,11 @@ void setup() {
   }
   analogWriteResolution(11);
   analogWriteFrequency(A9, 200);
-  if (armado==0) {
-      ppm[2] = 1100; // THR
-      ppm[3] = 1900; //YAW
-      armado =1;
-      delay(3000);
+// ARM
+  ppmOUT.begin(A8); 
+  ppmOUT.write(3,1100);
+  ppmOUT.write(4,1900);
+  delay(3000);
 } 
 /*
  * El evento serial ocurre cuando se detecta una trama a traves del bus serial
