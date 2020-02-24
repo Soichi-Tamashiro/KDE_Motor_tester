@@ -1,6 +1,5 @@
 // Llama a la libreria servo para el control del motor brushles de dron
-#include <Servo.h> 
-Servo mimotor;                   // Cambio de nombre para llamar mas facilmente a las funciones de la libreria servo
+//Servo mimotor;                   // Cambio de nombre para llamar mas facilmente a las funciones de la libreria servo
 int dato = 0;
 int val = 0;
 String inputString = "";         // String para almacenar el texto enviado por Serial
@@ -9,11 +8,6 @@ void setup() {
   // Iniciando comunicacion serial a 9600 baudrate
   Serial.begin(9600);
   inputString.reserve(200);
-//  mimotor.attach(9);
-  // initialize the LED pins:
-  for (int thisPin = 2; thisPin < 7; thisPin++) {
-    pinMode(thisPin, OUTPUT);
-  }
   analogWriteResolution(11);
   analogWriteFrequency(A9, 200);
 } 

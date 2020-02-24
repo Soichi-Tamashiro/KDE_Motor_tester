@@ -6,7 +6,7 @@ int paso = 0; // Pasos exclusivamente para secuencia de picos
 #define ledVerde 10 //Indicador de prueba sencilla
 #define ledAmarillo 11 //Indicador de prueba mediana
 #define ledRojo 12 //Indicador de prueba achorada 
-
+#define voltaje 21 // voltaje para la placa
 
 //DELAYS WITH MILLIS
 unsigned long tiempo_fp = 0; // Para calculo de tiempo filtrado interrupción del pulsador  
@@ -41,9 +41,11 @@ void setup() {
   pinMode(ledVerde, OUTPUT); // Prueba 1 Fácil
   pinMode(ledAmarillo, OUTPUT); // Prueba 2 Moderada
   pinMode(ledRojo, OUTPUT); // Prueba 3 Exigente 
+  pinMode(voltaje, OUTPUT); // salida de voltaje para la placa 
   digitalWrite(ledVerde, LOW); 
   digitalWrite(ledAmarillo, LOW);
   digitalWrite(ledRojo, LOW);
+  digitalWrite(voltaje, HIGH);//VOLTAJE A LA PLACA
   pinMode(SWITCH_PIN, INPUT_PULLUP); // Pin de Interrupción paso 
   attachInterrupt(digitalPinToInterrupt(SWITCH_PIN),Cambio,FALLING); 
   pinMode(PARADA_PIN, INPUT_PULLUP); // Pin de Interrupción Parada de emergancia 
@@ -443,9 +445,9 @@ int cal (int thr) {
   return rtres = (thr*2047)/4990;// Regla de 3 simple
 }
 void enviar(int thr) {
-  salida = map(cal(thr), 0, 2047, 0, 255);
+  salida = map(cal(thr), 0, 2047, 0, 256);
   analogWrite(A9, salida); //Salida Motor 1
-  analogWrite(A8, salida); //Salida Motor 2
-  analogWrite(A7, salida); //Salida Motor 3
-  analogWrite(A6, salida); //Salida Motor 4
+//  analogWrite(A8, salida); //Salida Motor 2
+//  analogWrite(A7, salida); //Salida Motor 3
+//  analogWrite(A6, salida); //Salida Motor 4
 }
