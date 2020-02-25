@@ -17,10 +17,15 @@ void setup() {
   analogWriteResolution(11);
   analogWriteFrequency(A9, 200);
 // ARM
-  ppmOUT.begin(A8); 
+  ppmOUT.begin(22); 
+  ppmOUT.write(1,1500);
+  ppmOUT.write(2,1500);
   ppmOUT.write(3,1100);
   ppmOUT.write(4,1900);
-  delay(3000);
+  ppmOUT.write(5,1500);
+  ppmOUT.write(6,1500);
+  ppmOUT.write(7,1500);
+  ppmOUT.write(8,1500);
 } 
 /*
  * El evento serial ocurre cuando se detecta una trama a traves del bus serial
@@ -60,12 +65,39 @@ void serialEvent()
    }
    // Si el String es "hemo1" Se envia el comando de velocidad para analisis tipo 1
    else if (inputString=="hemo1"){
-      dato =100;// deseado 1100us
+//      dato =100;// deseado 1100us
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
-      enviar(dato);
-      Serial.print("Iniciando analisis Tipo 1\n");
+//      enviar(dato);
+
+ if (armado==0) {
+  ppmOUT.write(3,1100);
+  ppmOUT.write(4,1900);
+      delay(3000); //El delay con millis no esta sirviendo en este caso 
+      if (millis() - tiempo_dlay1  > delay_1)  {
+        tiempo_dlay1 = millis();
+              paso =0; 
+      }
+                    while(canal3 > 1500)) {
+        //delay(100);
+               if (millis() - tiempo_dlay3 > delay_3)  {
+          tiempo_dlay3 = millis();
+          ppm[3] -=8; // THR
+       }
+      }
+      while((ppm[2] < 1500)&&(cont==1)) {
+        //delay(100);
+       if (millis() - tiempo_dlay3 > delay_3)  {
+          tiempo_dlay3 = millis();
+          ppm[2] +=8; // THR
+       }
+      } 
+      armado =1;
+        }
+      Serial.print("Armado 1\n");
+
+      
    }   
    // Si el String es "hemo2" Se envia el comando de velocidad para analisis tipo 2     
    else if (inputString=="hemo2"){
