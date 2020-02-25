@@ -1,6 +1,15 @@
 # include <PulsePosition.h>
-int dato = 0;
 int val = 0;
+int thr =1500;
+int yaw=1500;
+unsigned long tiempo_dlay1 = 0; // Para calculo delay 3 seg (Doesn't work)
+unsigned long tiempo_dlay2 = 0; // Para calculo delay 0.15 seg
+unsigned long tiempo_dlay3 = 0; // Para calculo delay 0.1 seg
+
+const unsigned long delay_1 = 3000; //  periodo 3 seg (Doesn't work)
+const unsigned long delay_2 = 150; //  periodo de 0.15 seg 
+const unsigned long delay_3 = 50; //  periodo de 0.05 seg SEC FACIL (ademas descenso modo exigente)
+
 String inputString = "";         // String para almacenar el texto enviado por Serial
 
 PulsePositionOutput ppmOUT;
@@ -17,11 +26,12 @@ void setup() {
   analogWriteResolution(11);
   analogWriteFrequency(A9, 200);
 // ARM
+thr=1500;
   ppmOUT.begin(22); 
   ppmOUT.write(1,1500);
   ppmOUT.write(2,1500);
-  ppmOUT.write(3,1100);
-  ppmOUT.write(4,1900);
+  ppmOUT.write(3,thr);
+  ppmOUT.write(4,yaw);
   ppmOUT.write(5,1500);
   ppmOUT.write(6,1500);
   ppmOUT.write(7,1500);
@@ -48,10 +58,10 @@ void serialEvent()
    // accion       
    // Si el String es "apagado" Se envia el comando de apagado al motor
    if (inputString=="off"){
-      dato =400;
+      thr =400;
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
-      analogWrite(A9, map(dato, 0, 2047, 0, 2047));
+      analogWrite(A9, map(thr, 0, 2047, 0, 2047));
       /* Serial.print("Secuencia de Apagado Iniciada");
       delay(1000);
       Serial.print(".");
@@ -64,58 +74,60 @@ void serialEvent()
       Serial.print("Sistema Apagado\n");
    }
    // Si el String es "hemo1" Se envia el comando de velocidad para analisis tipo 1
-   else if (inputString=="hemo1"){
+   else if (inputString=="armado"){
 //      dato =100;// deseado 1100us
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
 //      enviar(dato);
 
- if (armado==0) {
-  ppmOUT.write(3,1100);
-  ppmOUT.write(4,1900);
+  thr=1100;
+  yaw=1900;
+  ppmOUT.write(3,thr);
+  enviar(thr);
+  ppmOUT.write(4,yaw);
       delay(3000); //El delay con millis no esta sirviendo en este caso 
-      if (millis() - tiempo_dlay1  > delay_1)  {
-        tiempo_dlay1 = millis();
-              paso =0; 
+//      if (millis() - tiempo_dlay1  > delay_1)  {
+//        tiempo_dlay1 = millis();
+//      }
+                    while(yaw > 1500) {
+        delay(50);
+//               if (millis() - tiempo_dlay3 > delay_3)  {
+//          tiempo_dlay3 = millis();
+          yaw -=8; // YAW
+          ppmOUT.write(4,yaw);
+     //  }
       }
-                    while(canal3 > 1500)) {
-        //delay(100);
-               if (millis() - tiempo_dlay3 > delay_3)  {
-          tiempo_dlay3 = millis();
-          ppm[3] -=8; // THR
-       }
-      }
-      while((ppm[2] < 1500)&&(cont==1)) {
-        //delay(100);
-       if (millis() - tiempo_dlay3 > delay_3)  {
-          tiempo_dlay3 = millis();
-          ppm[2] +=8; // THR
-       }
+      while((thr < 1500)) {
+        delay(50);
+//       if (millis() - tiempo_dlay3 > delay_3)  {
+//          tiempo_dlay3 = millis();
+          thr +=8; // THR
+          enviar(thr);
+          ppmOUT.write(3,thr);
+       //}
       } 
-      armado =1;
-        }
       Serial.print("Armado 1\n");
 
       
    }   
    // Si el String es "hemo2" Se envia el comando de velocidad para analisis tipo 2     
    else if (inputString=="hemo2"){
-      dato =1500; //1500us deseado
+      thr =1500; //1500us deseado
 //      val = map(dato, 0, 1023, 0, 255);
 //      mimotor.write(val);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
-      enviar(dato);
+      enviar(thr);
       Serial.print("Iniciando analisis Tipo 2\n");
    }
    // Si el String es "hemo3" Se envia el comando de velocidad para analisis tipo 3
    else if (inputString=="hemo3"){
-      dato = 1900; //1900us deseado max
-      enviar(dato);
+      thr = 1900; //1900us deseado max
+      enviar(thr);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
-      enviar(dato);
+      enviar(thr);
       Serial.print("Iniciando analisis Tipo 3\n");
-      Serial.print(cal(dato));
+      Serial.print(cal(thr));
    }
 
    else{
@@ -128,12 +140,12 @@ void serialEvent()
 void loop(){
   // No se utiliza 
 }
-int cal (int dato) {
+int cal (int thr) {
   int salida;
-  return salida = (dato*2047)/4990;// Regla de 3 simple
+  return salida = (thr*2047)/4990;// Regla de 3 simple
 }
-void enviar(int dato) {
-  int val = map(cal(dato), 0, 2047, 0, 2047);
+void enviar(int thr) {
+  int val = map(cal(thr), 0, 2047, 0, 2047);
 //  int valc= val -2;
   analogWrite(A9, val);
 }

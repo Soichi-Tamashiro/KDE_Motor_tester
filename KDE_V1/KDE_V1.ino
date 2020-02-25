@@ -32,7 +32,7 @@ void serialEvent()
    // accion       
    // Si el String es "apagado" Se envia el comando de apagado al motor
    if (inputString=="off"){
-      dato =400;
+      dato =1100;
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
       analogWrite(A9, map(dato, 0, 2047, 0, 2047));
@@ -49,7 +49,7 @@ void serialEvent()
    }
    // Si el String es "hemo1" Se envia el comando de velocidad para analisis tipo 1
    else if (inputString=="hemo1"){
-      dato =100;// deseado 1100us
+      dato =1900;// deseado 1100us
 //      val = map(dato, 0, 1023, 0, 140);
 //      mimotor.write(val);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
@@ -58,7 +58,7 @@ void serialEvent()
    }   
    // Si el String es "hemo2" Se envia el comando de velocidad para analisis tipo 2     
    else if (inputString=="hemo2"){
-      dato =1500; //1500us deseado
+      dato =1100; //1500us deseado
 //      val = map(dato, 0, 1023, 0, 255);
 //      mimotor.write(val);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
@@ -67,7 +67,7 @@ void serialEvent()
    }
    // Si el String es "hemo3" Se envia el comando de velocidad para analisis tipo 3
    else if (inputString=="hemo3"){
-      dato = 1900; //1900us deseado max
+      dato = 1500; //1900us deseado max
       enviar(dato);
 //      analogWrite(A9, map(cal(dato), 0, 2047, 0, 2047));
       enviar(dato);

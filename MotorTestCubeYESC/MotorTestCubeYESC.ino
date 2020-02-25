@@ -435,35 +435,6 @@ while (modo>4) { ///// Se reinicia el ciclo
   modo=0;
 }
 }
-ISR(TIMER1_COMPA_vect){  //leave this alone
-  static boolean state = true;
-  
-  TCNT1 = 0;
-  
-  if (state) {  //start pulse
-    digitalWrite(sigPin, onState);
-    OCR1A = PULSE_LENGTH * 2;
-    state = false;
-  } else{  //end pulse and calculate when to start the next pulse
-    static byte cur_chan_numb;
-    static unsigned int calc_rest;
-  
-    digitalWrite(sigPin, !onState);
-    state = true;
-
-    if(cur_chan_numb >= CHANNEL_NUMBER){
-      cur_chan_numb = 0;
-      calc_rest = calc_rest + PULSE_LENGTH;// 
-      OCR1A = (FRAME_LENGTH - calc_rest) * 2;
-      calc_rest = 0;
-    }
-    else{
-      OCR1A = (ppm[cur_chan_numb] - PULSE_LENGTH) * 2;
-      calc_rest = calc_rest + ppm[cur_chan_numb];
-      cur_chan_numb++;
-    }     
-  }
-}
  void Cambio() {      //cambio de estado 
       if (millis() - tiempo_fp > delay_fp)  {
          cont++;
